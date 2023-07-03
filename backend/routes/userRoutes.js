@@ -2,7 +2,8 @@ import express from "express";
 const router = express.Router();
 import {
     authUser,
-    registerUser,
+    registerUser
+    ,
     logoutUser,
     getUserProfile,
     updateUserProfile
