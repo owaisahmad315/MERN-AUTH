@@ -7,8 +7,22 @@ import User from "../models/userModel.js";
 // @access  Public
 
 const authUser = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
 
-    res.status(200).json({ message: 'Auth User Owais' });
+    const user = await User.fineOne({ email });
+
+    if (user) {
+        generateToken(res, user._id)
+        res.status(201).json({
+            _id: user._id,
+            name: user.name,
+            email: user.email
+        });
+    } else {
+        res.status(400);
+        throw new Error('Invalid email or password')
+    }
+
 });
 
 
