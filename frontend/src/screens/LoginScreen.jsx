@@ -5,7 +5,7 @@ import { useDispatch, useSelector} from 'react-redux';
 import  FormContainer from '../components/FormContainer'; 
 import { useLoginMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
-
+import { toast } from "react-toastify";
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
@@ -17,9 +17,21 @@ const LoginScreen = () => {
     const [login, {isLoading, }] = useLoginMutation();
     const {userInfo} = useSelector((state) => state.auth);
 
+    useEffect(() => {
+        if (userInfo) {
+            navigate('/');
+        }
+    }, navigate, userInfo);
+
     const submitHandler = async (e) => {
         e.preventDefault();
-        console.log('submit');
+        try {
+            const res = await login({email, password}).unwrap();
+            dispatch(setCredentials({...res}));
+            navigate('/');
+        } catch (err) {
+            toast.error(err?.data?.message || err.error);
+        }
     }
 
   return (
