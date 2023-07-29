@@ -29,7 +29,7 @@ const RegisterScreen = () => {
         if (userInfo) {
             navigate('/');
         }
-    }, navigate, userInfo);
+    }, [navigate, userInfo]);
 
 
     const submitHandler = async (e) => {
