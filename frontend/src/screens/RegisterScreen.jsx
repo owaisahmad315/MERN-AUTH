@@ -1,5 +1,5 @@
 import { useState, useEffect} from "react";
-import {Link } from 'react-router-dom';
+import {Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector} from 'react-redux';
 
 import { Form, Button, Row, Col } from 'react-bootstrap';
@@ -23,7 +23,7 @@ const RegisterScreen = () => {
 
     const {userInfo} = useSelector((state) => state.auth);
 
-    const [register, {isLoading, }] = useRegisterMutation();
+    const [register, {isLoading }] = useRegisterMutation();
 
     useEffect(() => {
         if (userInfo) {
@@ -38,9 +38,11 @@ const RegisterScreen = () => {
             toast.error('Passwords do not match');
          } else {
             try {
-                
-            } catch (error) {
-                
+                const res = await register({name, email, password}).unwrap();
+                dispatch(setCredentials({...res}));
+                navigate('/'); 
+            } catch (err) {
+                toast.error(err?.data?.message || err.error);  
             }
          }
     }
@@ -73,7 +75,7 @@ const RegisterScreen = () => {
                 </Form.Control>
             </Form.Group>
 
-            <Form.Group className="my-2" controlId="email">
+            <Form.Group className="my-2" controlId="password">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                     type="password"
@@ -94,6 +96,8 @@ const RegisterScreen = () => {
                 >    
                 </Form.Control>
             </Form.Group>
+
+            {isLoading && <Loader />}
 
             <Button type='submit' variant="primary" className="mt-3">
                 Sign Up
